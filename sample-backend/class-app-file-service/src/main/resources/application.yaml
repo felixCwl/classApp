@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: ${FILE_SERVICE_NAME}
+server:
+  port: ${FILE_SERVICE_PORT}
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${DISCOVERY_SERVICE_NAME}:${DISCOVERY_SERVICE_PORT}/eureka
+
+file-service-endpoint:
+  file-upload-path: file-service/file-upload
+  file-converter-path: file-service/file-convert

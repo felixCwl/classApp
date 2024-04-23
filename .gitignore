@@ -1,0 +1,35 @@
+# Maven target directory
+target/
+
+# Compiled Java classes
+*.class
+
+# Compiled web assets
+src/main/webapp/dist/
+
+# Maven and Spring Boot specific files
+mvnw
+mvnw.cmd
+.idea/
+*.iml
+out/
+
+# Spring Boot generated files
+spring-boot-*.log
+logs/
+
+# React.js build artifacts
+node_modules/
+build/
+dist/
+
+# IDE-specific files
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.idea/
+*.iml
+
+# Operating System files
+.DS_Store
+Thumbs.db

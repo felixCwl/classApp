@@ -1,0 +1,15 @@
+# port
+server:
+  port: 9940
+spring:
+  application:
+    name: class-app-config-service
+  cloud:
+    config:
+        enabled: false
+#    import: optional=configserver:http://localhost:8888
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+

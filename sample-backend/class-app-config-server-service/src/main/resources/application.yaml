@@ -1,0 +1,16 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: class-app-config-server
+  cloud:
+    config:
+      enabled: false
+      server:
+        git:
+          uri:
+            localhost
+#          username:
+#          password:
+#          default-label:
+
