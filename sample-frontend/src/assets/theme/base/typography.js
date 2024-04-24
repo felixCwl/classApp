@@ -1,19 +1,4 @@
 /**
-=========================================================
-* sample React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-/**
  * The base typography styles for the sample React.
  * You can add new typography style using this file.
  * You can customized the typography styles for the entire sample React using thie file.
