@@ -1,0 +1,55 @@
+version: "3.8"
+services:
+  discovery-service:
+    build: ./sample-backend/class-app-eureka-service
+    restart: on-failure
+    ports:
+      - ${DISCOVERY_SERVICE_PORT}:${DISCOVERY_SERVICE_PORT}
+    environment:
+      - DISCOVERY_SERVICE_NAME=${DISCOVERY_SERVICE_NAME}
+      - DISCOVERY_SERVICE_PORT=${DISCOVERY_SERVICE_PORT}
+  file-service:
+    depends_on:
+      - discovery-service
+    build:
+      context: ./sample-backend/class-app-file-service
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
+    ports:
+      - ${FILE_SERVICE_PORT}:${FILE_SERVICE_PORT}
+    environment:
+      - FILE_SERVICE_PORT=${FILE_SERVICE_PORT}
+      - FILE_SERVICE_NAME=${FILE_SERVICE_NAME}
+      - DISCOVERY_SERVICE_NAME=${DISCOVERY_SERVICE_NAME}
+      - DISCOVERY_SERVICE_PORT=${DISCOVERY_SERVICE_PORT}
+  class-service:
+    depends_on:
+      - discovery-service
+    build: ./sample-backend/class-app-class-service
+    restart: on-failure
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
+    ports:
+      - ${CLASS_SERVICE_PORT}:${CLASS_SERVICE_PORT}
+    environment:
+      - CLASS_SERVICE_PORT=${CLASS_SERVICE_PORT}
+      - CLASS_SERVICE_NAME=${CLASS_SERVICE_NAME}
+      - FILE_SERVICE_PORT=${FILE_SERVICE_PORT}
+      - FILE_SERVICE_NAME=${FILE_SERVICE_NAME}
+      - DISCOVERY_SERVICE_NAME=${DISCOVERY_SERVICE_NAME}
+      - DISCOVERY_SERVICE_PORT=${DISCOVERY_SERVICE_PORT}
+  class-app-web:
+    build:
+      context: ./sample-frontend/
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+      - /app/node_modules
