@@ -5,6 +5,10 @@ spring:
 server:
   port: ${CLASS_SERVICE_PORT}
 
+discovery:
+  name: ${DISCOVERY_SERVICE_NAME}
+file:
+  name: ${FILE_SERVICE_NAME}
 eureka:
   client:
     register-with-eureka: true

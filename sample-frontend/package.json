@@ -1,17 +1,7 @@
 {
-  "name": "material-dashboard-2-react",
-  "version": "2.2.0",
+  "name": "class-app-frontend",
+  "version": "1.1.0",
   "private": true,
-  "author": "Creative Tim",
-  "license": "See license in https://www.creative-tim.com/license",
-  "description": "React version of sample by Creative Tim",
-  "bugs": {
-    "url": "https://github.com/creativetimofficial/material-dashboard-react/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/creativetimofficial/material-dashboard-react.git"
-  },
   "dependencies": {
     "@emotion/cache": "11.10.8",
     "@emotion/react": "^11.10.8",
@@ -50,6 +40,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
+    "install:clean:noStart": "rm -rf node_modules/ && rm -rf package-lock.json && npm install",
     "win:install:clean": "rmdir /s node_modules && del package-lock.json && npm install && npm start"
   },
   "eslintConfig": {
