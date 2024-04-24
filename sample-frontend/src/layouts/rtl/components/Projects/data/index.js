@@ -193,3 +193,9 @@ export default function data() {
     ],
   };
 }
+
+// Add prop validation for the "Company" component
+Company.propTypes = {
+  image: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+};

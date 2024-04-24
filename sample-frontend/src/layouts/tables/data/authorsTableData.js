@@ -75,3 +75,15 @@ export default function data() {
     ],
   };
 }
+
+// Add prop validation for the "Author" component
+Author.propTypes = {
+  image: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+};
+
+Job.propTypes = {
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+};
