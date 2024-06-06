@@ -35,7 +35,16 @@ export default function data() {
       </SampleBox>
     </SampleBox>
   );
+  // Add prop validation for the "Project" component
+  Project.propTypes = {
+    image: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  };
 
+  Progress.propTypes = {
+    color: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+  };
   return {
     columns: [
       { Header: "project", accessor: "project", width: "30%", align: "left" },
@@ -235,14 +244,3 @@ export default function data() {
     ],
   };
 }
-
-// Add prop validation for the "Project" component
-Project.propTypes = {
-  image: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-};
-
-Progress.propTypes = {
-  color: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-};

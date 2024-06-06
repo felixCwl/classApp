@@ -51,7 +51,11 @@ export default function data() {
       </SampleTypography>
     </SampleBox>
   );
-
+  // Add prop validation for the "Company" component
+  Company.propTypes = {
+    image: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  };
   return {
     columns: [
       { Header: "companies", accessor: "companies", width: "45%", align: "left" },
@@ -191,9 +195,3 @@ export default function data() {
     ],
   };
 }
-
-// Add prop validation for the "Company" component
-Company.propTypes = {
-  image: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-};

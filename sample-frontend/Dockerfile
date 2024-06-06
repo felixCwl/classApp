@@ -1,27 +1,25 @@
-# Use an official Node.js runtime as the base image
+# Use the official Node.js image as the base image
 FROM node:18
 
-# Set the working directory in the container
-WORKDIR ./sample-frontend
+# Set the working directory inside the container
+WORKDIR /app
 
-# Copy the package.json and package-lock.json files to the container
+RUN rm -rf node_modules/ && rm -rf package-lock.json
+
+# Copy the package.json and package-lock.json files
 COPY package*.json ./
 
-RUN npm config set legacy-peer-deps true
-RUN npm install -g npm@10.5.2
+# Install the dependencies
+RUN npm install -g npm@10.8.1
 
-# Install the app dependencies
-#RUN npm install
-RUN npm run install:clean:noStart
+# Copy the rest of the application code
+COPY . .
 
-# Copy the source code to the container
-COPY . ./
-
-# Build the React app
+# Build the application (for Next.js, you might need to build it)
 RUN npm run build
 
-# Expose the desired port
+# Expose the port the app runs on (usually 3000 for Next.js)
 EXPOSE 3000
 
-# Set the command to run the app when the container starts
+# Start the application
 CMD ["npm", "start"]
