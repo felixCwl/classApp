@@ -21,10 +21,10 @@ WORKDIR /app
 # Copy the jar file from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-ENV FILE_SERVICE_NAME=class-app-file
-ENV FILE_SERVICE_PORT=8082
-ENV DISCOVERY_SERVICE_NAME=class-app-discovery
-ENV DISCOVERY_SERVICE_PORT=8080
+#ENV FILE_SERVICE_NAME=class-app-file
+#ENV FILE_SERVICE_PORT=8082
+#ENV DISCOVERY_SERVICE_NAME=class-app-discovery
+#ENV DISCOVERY_SERVICE_PORT=8080
 
 # Expose the port the app runs on
 EXPOSE 8080
