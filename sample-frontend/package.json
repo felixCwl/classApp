@@ -19,7 +19,6 @@
     "react-chartjs-2": "5.2.0",
     "react-csv": "^2.2.2",
     "react-data-grid": "^7.0.0-beta.42",
-    "react-data-grid-addons": "^7.0.0-alpha.24",
     "react-dom": "^18.2.0",
     "react-github-btn": "1.4.0",
     "react-icons": "4.12.0",
@@ -33,7 +32,7 @@
   },
   "scripts": {
     "start": "GENERATE_SOURCEMAP=false react-scripts start",
-    "winStart": "set \"GENERATE_SOURCEMAP=false\" && react-scripts start",
+    "winStart": "set \"GENERATE_SOURCEMAP=false\" && npm install && react-scripts start --max-old-space-size=8192",
     "winStartProd": "set \"NODE_ENV=production\" %% set \"BROWSER=none\"&& set \"GENERATE_SOURCEMAP=false\"  && react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
@@ -41,7 +40,7 @@
     "eject": "react-scripts eject",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
     "install:clean:noStart": "rm -rf node_modules/ && rm -rf package-lock.json && npm install",
-    "win:install:clean": "rmdir /s node_modules && del package-lock.json && npm install && npm start",
+    "win:install:clean": "rmdir /s /q node_modules && del /f package-lock.json && npm install",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "eslintConfig": {
@@ -74,5 +73,6 @@
   },
   "overrides": {
     "svgo": "3.0.2"
-  }
+  },
+  "babel": { "compact": true }
 }
