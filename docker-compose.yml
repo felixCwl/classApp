@@ -1,61 +1,58 @@
-  version: "3.8"
-  services:
-    discovery-service:
-      image: classappservice/class-app-discovery-service
-      build: ./sample-backend/class-app-eureka-service
-      restart: on-failure
-      ports:
-        - ${DISCOVERY_SERVICE_PORT}:${DISCOVERY_SERVICE_PORT}
-      environment:
-        - DISCOVERY_SERVICE_NAME=${DISCOVERY_SERVICE_NAME}
-        - DISCOVERY_SERVICE_PORT=${DISCOVERY_SERVICE_PORT}
-    file-service:
-      image: classappservice/class-app-file-service
-      depends_on:
-        - discovery-service
-      build:
-        context: ./sample-backend/class-app-file-service
-        dockerfile: Dockerfile
-      restart: on-failure
-      volumes:
-        - .m2:/root/.m2
-      stdin_open: true
-      tty: true
-      ports:
-        - ${FILE_SERVICE_PORT}:${FILE_SERVICE_PORT}
-      environment:
-        - FILE_SERVICE_PORT=${FILE_SERVICE_PORT}
-        - FILE_SERVICE_NAME=${FILE_SERVICE_NAME}
-        - DISCOVERY_SERVICE_NAME=${DISCOVERY_SERVICE_NAME}
-        - DISCOVERY_SERVICE_PORT=${DISCOVERY_SERVICE_PORT}
-    class-service:
-      image: classappservice/class-app-class-service
-      depends_on:
-        - discovery-service
-      build: ./sample-backend/class-app-class-service
-      restart: on-failure
-      volumes:
-        - .m2:/root/.m2
-      stdin_open: true
-      tty: true
-      ports:
-        - ${CLASS_SERVICE_PORT}:${CLASS_SERVICE_PORT}
-      environment:
-        - CLASS_SERVICE_PORT=${CLASS_SERVICE_PORT}
-        - CLASS_SERVICE_NAME=${CLASS_SERVICE_NAME}
-        - FILE_SERVICE_PORT=${FILE_SERVICE_PORT}
-        - FILE_SERVICE_NAME=${FILE_SERVICE_NAME}
-        - DISCOVERY_SERVICE_NAME=${DISCOVERY_SERVICE_NAME}
-        - DISCOVERY_SERVICE_PORT=${DISCOVERY_SERVICE_PORT}
-    class-app-web:
-      image: classappservice/class-app-web
-      build:
-        context: ./sample-frontend/
-        dockerfile: Dockerfile
-      ports:
-        - ${CLASS_WEB_APP_PORT}:${CLASS_WEB_APP_PORT}
-      depends_on:
-        - discovery-service
-  #    volumes:
-  #      - .:/app
-  #      - /app/node_modules
+services:
+  discovery-service:
+    image: classappservice/class-app-discovery-service
+    ports:
+      - ${DISCOVERY_SERVICE_PORT}:${DISCOVERY_SERVICE_PORT}
+    networks:
+      - my-class-app
+    environment:
+      - DISCOVERY_SERVICE_NAME=${DISCOVERY_SERVICE_NAME}
+      - DISCOVERY_SERVICE_PORT=${DISCOVERY_SERVICE_PORT}
+    env_file:
+      - .env
+  file-service:
+    image: classappservice/class-app-file-service
+    depends_on:
+      - discovery-service
+    networks:
+      - my-class-app
+    ports:
+      - ${FILE_SERVICE_PORT}:${FILE_SERVICE_PORT}
+    environment:
+      - FILE_SERVICE_PORT=${FILE_SERVICE_PORT}
+      - FILE_SERVICE_NAME=${FILE_SERVICE_NAME}
+      - DISCOVERY_SERVICE_NAME=${DISCOVERY_SERVICE_NAME}
+      - DISCOVERY_SERVICE_PORT=${DISCOVERY_SERVICE_PORT}
+    env_file:
+      - .env
+  class-service:
+    image: classappservice/class-app-class-service
+    depends_on:
+      - discovery-service
+    networks:
+      - my-class-app
+    ports:
+      - ${CLASS_SERVICE_PORT}:${CLASS_SERVICE_PORT}
+    environment:
+      - CLASS_SERVICE_PORT=${CLASS_SERVICE_PORT}
+      - CLASS_SERVICE_NAME=${CLASS_SERVICE_NAME}
+      - FILE_SERVICE_PORT=${FILE_SERVICE_PORT}
+      - FILE_SERVICE_NAME=${FILE_SERVICE_NAME}
+      - DISCOVERY_SERVICE_NAME=${DISCOVERY_SERVICE_NAME}
+      - DISCOVERY_SERVICE_PORT=${DISCOVERY_SERVICE_PORT}
+    env_file:
+      - .env
+  class-app-web:
+    image: classappservice/class-app-web
+    ports:
+      - ${CLASS_WEB_APP_PORT}:${CLASS_WEB_APP_PORT}
+    depends_on:
+      - discovery-service
+    networks:
+      - my-class-app
+    env_file:
+      - .env
+
+networks:
+  my-class-app:
+    name: my-class-app
