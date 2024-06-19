@@ -1,6 +1,6 @@
 # Use a Windows Server Core base image
 FROM mcr.microsoft.com/windows/servercore:ltsc2019
-FROM mcr.microsoft.com/dotnet/framework/runtime:4.8-windowsservercore-ltsc2016
+FROM mcr.microsoft.com/dotnet/framework/runtime:4.8-windowsservercore-ltsc2019
 
 ## Install Chocolatey
 RUN powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command \
