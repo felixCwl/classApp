@@ -14,4 +14,4 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://${DISCOVERY_SERVICE_NAME}:${DISCOVERY_SERVICE_PORT}/eureka
+      defaultZone: http://${DISCOVERY_SERVICE_LOCAL_HOST}:${DISCOVERY_SERVICE_PORT}/eureka

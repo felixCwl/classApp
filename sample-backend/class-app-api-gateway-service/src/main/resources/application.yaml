@@ -1,0 +1,18 @@
+spring:
+    application:
+        name: ${GATEWAY_SERVICE_NAME}
+    cloud:
+        gateway:
+            routes:
+                - id: ${CLASS_SERVICE_NAME}
+                  predicates:
+                      - Path=/first/
+                  uri: localhost:${CLASS_SERVICE_PORT}
+server:
+    port: ${GATEWAY_SERVICE_PORT}
+eureka:
+    client:
+        register-with-eureka: true
+        fetch-registry: true
+        service-url:
+            defaultZone: http://${DISCOVERY_SERVICE_LOCAL_HOST}:${DISCOVERY_SERVICE_PORT}/eureka

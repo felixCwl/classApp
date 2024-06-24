@@ -8,8 +8,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://${DISCOVERY_SERVICE_NAME}:${DISCOVERY_SERVICE_PORT}/eureka
-
+      defaultZone: http://${DISCOVERY_SERVICE_LOCAL_HOST}:${DISCOVERY_SERVICE_PORT}/eureka
 file-service-endpoint:
   file-upload-path: file-service/file-upload
   file-converter-path: file-service/file-convert
