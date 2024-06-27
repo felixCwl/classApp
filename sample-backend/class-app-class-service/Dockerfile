@@ -28,4 +28,4 @@ RUN ["cmd", "/S", "/C", "mvn package -DskipTests"]
 EXPOSE 8080
 
 # Command to run the application
-CMD ["java", "-jar", "C:/target/class-app-class-service-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-Xmx1g", "-jar", "C:/target/class-app-class-service-0.0.1-SNAPSHOT.jar"]
