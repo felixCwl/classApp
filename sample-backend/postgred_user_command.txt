@@ -1,0 +1,7 @@
+\du -> list all user
+ALTER USER <user_name> WITH PASSWORD '<password>'; -> change user password
+ALTER ROLE user1 WITH CREATEDB; -> add role to user user1
+
+\list -> list all
+
+create database class_app_db owner class_app_user; -> create a db with owner

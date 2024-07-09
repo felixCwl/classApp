@@ -6,6 +6,7 @@ import com.example.classAppClassService.model.ClassDivisionDto;
 import com.example.classAppClassService.model.ClassDivisionProcessDto;
 import com.example.classAppClassService.model.ClassDivisionResultDto;
 import com.example.classAppClassService.model.ClassGradeExpectedInput;
+import com.example.classAppClassService.repository.ClassDivisionRepository;
 import com.example.classAppClassService.services.classClassification.ClassDivisionUtil;
 import com.example.classAppClassService.services.classClassification.process.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,8 @@ public class ClassDivisionServiceImpl implements ClassDivisionService {
 
   @Autowired private FileServiceFeign fileServiceFeign;
 
+  @Autowired private ClassDivisionRepository classDivisionRepository;
+
   @Override
   public JsonNode generateClassDivisionResult(ClassDivisionDto classDivisionDto)
       throws JsonProcessingException {
@@ -34,6 +38,9 @@ public class ClassDivisionServiceImpl implements ClassDivisionService {
     JsonNode classExcelJsonNode = (JsonNode) responseEntity.getBody();
     List<ClassDivisionExcel> classDivisionExcels =
         ClassDivisionUtil.convertJsonNodeToClassExcelList(classExcelJsonNode);
+    if (!CollectionUtils.isEmpty(classDivisionExcels)) {
+        classDivisionRepository.saveAll(classDivisionExcels);
+    }
     List<ClassDivisionProcessDto> classDivisionProcessDtoList = new ArrayList<>();
     classDivisionProcessDtoList =
         ClassDivisionUtil.convertExcelDtoToProcessDto(classDivisionExcels);

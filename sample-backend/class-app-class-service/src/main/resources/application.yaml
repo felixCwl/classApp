@@ -1,6 +1,15 @@
 spring:
   application:
     name: ${CLASS_SERVICE_NAME}
+  datasource:
+    url: jdbc:postgresql://${POSTGRE_DB_HOST}:${POSTGRE_DB_HOST_PORT}/${POSTGRE_DATEBASE}
+    username: ${POSTGRE_DB_USER_USERNAME}
+    password: ${POSTGRE_DB_USER_PASSWORD}
+  jpa:
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
 
 server:
   port: ${CLASS_SERVICE_PORT}
