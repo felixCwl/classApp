@@ -5,3 +5,7 @@ ALTER ROLE user1 WITH CREATEDB; -> add role to user user1
 \list -> list all
 
 create database class_app_db owner class_app_user; -> create a db with owner
+
+psql -U class_app_user class_app_db
+
+set client_encoding to 'WIN1252'
