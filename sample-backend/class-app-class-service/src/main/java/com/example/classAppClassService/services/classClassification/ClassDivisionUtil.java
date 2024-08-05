@@ -13,6 +13,8 @@ import org.apache.poi.ss.formula.functions.T;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Log4j2
 public class ClassDivisionUtil {
@@ -91,19 +93,60 @@ public class ClassDivisionUtil {
     return resultDtoList;
   }
 
-  public static List<String> generateOrderedNewClassList(
-      int numberOfExpectedClass, String firstClassName) {
-    List<String> newClassList = new ArrayList<>();
+    public static List<String> generateOrderedNewClassList(int numberOfExpectedClass, String firstClassName) {
+        if (numberOfExpectedClass <= 0 || numberOfExpectedClass > 26) {
+            log.error("Length must be between 1 and 26");
+            return List.of("A");
+        }
 
-    char startLetter = firstClassName.charAt(0);
-    for (int i = 0; i < numberOfExpectedClass; i++) {
-      char letter = (char) (startLetter + i);
-      if (letter > 'Z') {
-        letter = (char) ('A' + (letter - 'Z' - 1));
-      }
-      newClassList.add(Character.toString(letter));
+        var letterList = IntStream.range(0, numberOfExpectedClass)
+                .mapToObj(i -> String.valueOf((char) ('A' + i)))
+                .toList();
+
+        if (!letterList.contains(firstClassName)) {
+            log.error("Input letter not match with length");
+            return letterList;
+        }
+
+        int startIndex = letterList.indexOf(firstClassName);
+        return Stream.concat(
+                letterList.subList(startIndex, letterList.size()).stream(),
+                letterList.subList(0, startIndex).stream()
+        ).toList();
     }
-    return sortNewClassList(newClassList);
+
+  public static List<String> generateOrderedNewClassList1(
+      int numberOfExpectedClass, String firstClassName) {
+      if (numberOfExpectedClass <= 0 || numberOfExpectedClass > 26 ) {
+          log.error("Length must be between 1 and 26");
+          return Arrays.asList("A");
+      }
+      char v = firstClassName.charAt(0);
+
+      List<String> letterList = new ArrayList<>();
+      for (char c = 'A'; c < 'A' + numberOfExpectedClass; c++) {
+          letterList.add(String.valueOf(c));
+      }
+      if (!letterList.contains(firstClassName)) {
+          log.error("Input letter not match with length");
+          return letterList;
+      }
+      int startIndex = letterList.indexOf(firstClassName);
+
+      if (startIndex == -1) {
+          log.error("Input letter not found in the alphabet list");
+          return letterList;
+      }
+      List<String> result = new ArrayList<>();
+      for (int i = startIndex; i < letterList.size(); i++) {
+          result.add(letterList.get(i));
+      }
+
+      for (int i = 0; i < startIndex; i++) {
+          result.add(letterList.get(i));
+      }
+
+      return result;
   }
 
   private static List<String> sortNewClassList(List<String> newClassList) {
