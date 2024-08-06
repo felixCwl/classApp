@@ -46,13 +46,14 @@ public class ClassDivisionServiceImpl implements ClassDivisionService {
 
     gradeGroupProcessDtoMap.forEach(
         (grade, dtoList) -> {
+            int newGrade = grade+1;
           ClassDivisionProcessor classDivisionProcessor =
               ClassDivisionProcessor.link(
                   new ClassDivisionPreHandleData(),
-                  new ClassDivisionSorting(classDivisionDto.getClassDivisionExpectedInput()),
-                  new ClassDivisionGenderSwap(classDivisionDto.getClassDivisionExpectedInput()),
-                  new ClassDivisionDisciplineSwap(classDivisionDto.getClassDivisionExpectedInput()),
-                  new ClassDivisionRetainSwap(classDivisionDto.getClassDivisionExpectedInput()));
+                  new ClassDivisionSorting(newGrade, classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(newGrade)),
+                  new ClassDivisionGenderSwap(newGrade, classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(newGrade)),
+                  new ClassDivisionDisciplineSwap(newGrade, classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(newGrade)),
+                  new ClassDivisionRetainSwap(newGrade,classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(newGrade)));
           classDivisionProcessor.processData(dtoList);
           resultDtoList.addAll(dtoList);
         });

@@ -88,11 +88,12 @@ public class ClassDivisionPreHandleData extends ClassDivisionProcessor {
       List<ClassDivisionProcessDto> classDivisionProcessDtoList) {
     classDivisionProcessDtoList.forEach(
         classDivisionProcessDto -> {
-          String kinderGardenStudentGradePrefix = StringUtils.lowerCase("K.");
+          String kinderGardenStudentGradePrefix = StringUtils.lowerCase("K.3");
           int kinderGardenStudentOriginalGrade = 0;
           if (StringUtils.lowerCase(classDivisionProcessDto.getOriginalClassName())
               .contains(kinderGardenStudentGradePrefix)) {
             classDivisionProcessDto.setOriginalGrade(kinderGardenStudentOriginalGrade);
+            classDivisionProcessDto.setOriginalClassName(org.apache.commons.lang3.StringUtils.replaceIgnoreCase(classDivisionProcessDto.getOriginalClassName(), "K.3", "0"));
           }
         });
   }

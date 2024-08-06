@@ -19,32 +19,25 @@ import static com.example.classAppClassService.services.classClassification.Clas
 @Log4j2
 public class ClassDivisionDisciplineSwap extends ClassDivisionProcessor {
 
-  private final ClassDivisionExpectedInput classDivisionExpectedInput;
+  private final ClassGradeExpectedInput classGradeExpectedInput;
+  private int newGrade;
 
-  public ClassDivisionDisciplineSwap(ClassDivisionExpectedInput classDivisionExpectedInput) {
-    this.classDivisionExpectedInput = classDivisionExpectedInput;
+  public ClassDivisionDisciplineSwap(int newGrade, ClassGradeExpectedInput classGradeExpectedInput) {
+    this.newGrade = newGrade;
+    this.classGradeExpectedInput = classGradeExpectedInput;
   }
 
   @Override
   public void processData(List<ClassDivisionProcessDto> classDivisionProcessDtoList) {
     processNext(
-        processGradeDisciplineSwap(classDivisionProcessDtoList, classDivisionExpectedInput));
+        processGradeDisciplineSwap(classDivisionProcessDtoList, classGradeExpectedInput));
   }
 
   private List<ClassDivisionProcessDto> processGradeDisciplineSwap(
       List<ClassDivisionProcessDto> classDivisionProcessDtoList,
-      ClassDivisionExpectedInput classDivisionExpectedInput) {
+      ClassGradeExpectedInput classGradeExpectedInput) {
     List<ClassDivisionProcessDto> resultDtoList = new ArrayList<>();
-    classDivisionExpectedInput
-        .getClassGradeExpectedInputMap()
-        .forEach(
-            (key, value) -> {
-              List<ClassDivisionProcessDto> gradeProcessDtoList =
-                  classDivisionProcessDtoList.stream()
-                      .filter(e -> e.getNewGrade() == key)
-                      .collect(Collectors.toList());
-              resultDtoList.addAll(processClassDisciplineSwap(key, gradeProcessDtoList, value));
-            });
+    resultDtoList.addAll(processClassDisciplineSwap(newGrade, classDivisionProcessDtoList, classGradeExpectedInput));
     return resultDtoList;
   }
 

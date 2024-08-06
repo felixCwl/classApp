@@ -16,10 +16,11 @@ import static com.example.classAppClassService.services.classClassification.Clas
 @Log4j2
 public class ClassDivisionRetainSwap extends ClassDivisionProcessor {
 
-  private final ClassDivisionExpectedInput classDivisionExpectedInput;
+  private final ClassGradeExpectedInput classGradeExpectedInput;
+  private int newGrade;
 
-  public ClassDivisionRetainSwap(ClassDivisionExpectedInput classDivisionExpectedInput) {
-    this.classDivisionExpectedInput = classDivisionExpectedInput;
+  public ClassDivisionRetainSwap(int newGrade, ClassGradeExpectedInput classGradeExpectedInput) {
+    this.classGradeExpectedInput = classGradeExpectedInput;
   }
 
   @Override
@@ -30,16 +31,7 @@ public class ClassDivisionRetainSwap extends ClassDivisionProcessor {
   private List<ClassDivisionProcessDto> processGradeRetainSwap(
       List<ClassDivisionProcessDto> classDivisionProcessDtoList) {
     List<ClassDivisionProcessDto> resultDtoList = new ArrayList<>();
-    classDivisionExpectedInput
-        .getClassGradeExpectedInputMap()
-        .forEach(
-            (key, value) -> {
-              List<ClassDivisionProcessDto> gradeProcessDtoList =
-                  classDivisionProcessDtoList.stream()
-                      .filter(e -> e.getNewGrade() == key)
-                      .collect(Collectors.toList());
-              resultDtoList.addAll(processClassRetainSwap(key, gradeProcessDtoList, value));
-            });
+    resultDtoList.addAll(processClassRetainSwap(newGrade, classDivisionProcessDtoList, classGradeExpectedInput));
     return resultDtoList;
   }
 

@@ -16,29 +16,24 @@ import static com.example.classAppClassService.services.classClassification.Clas
 
 @Log4j2
 public class ClassDivisionGenderSwap extends ClassDivisionProcessor {
-  private final ClassDivisionExpectedInput classDivisionExpectedInput;
+  private final ClassGradeExpectedInput classGradeExpectedInput;
+  private int newGrade;
 
-  public ClassDivisionGenderSwap(ClassDivisionExpectedInput classDivisionExpectedInput) {
-    this.classDivisionExpectedInput = classDivisionExpectedInput;
+  public ClassDivisionGenderSwap(int newGrade, ClassGradeExpectedInput classGradeExpectedInput) {
+      this.newGrade = newGrade;
+      this.classGradeExpectedInput = classGradeExpectedInput;
   }
 
   @Override
   public void processData(List<ClassDivisionProcessDto> classDivisionProcessDtoList) {
-    processNext(processGradeGenderSwap(classDivisionProcessDtoList, classDivisionExpectedInput));
+    processNext(processGradeGenderSwap(classDivisionProcessDtoList, classGradeExpectedInput));
   }
 
   private List<ClassDivisionProcessDto> processGradeGenderSwap(
       List<ClassDivisionProcessDto> classDivisionProcessDtoList,
-      ClassDivisionExpectedInput classDivisionExpectedInput) {
+      ClassGradeExpectedInput classGradeExpectedInput) {
     List<ClassDivisionProcessDto> resultDtoList = new ArrayList<>();
-    classDivisionExpectedInput
-        .getClassGradeExpectedInputMap()
-        .forEach(
-            (key, value) -> {
-              List<ClassDivisionProcessDto> gradeProcessDtoList =
-                  classDivisionProcessDtoList.stream().filter(e -> e.getNewGrade() == key).toList();
-              resultDtoList.addAll(processClassGenderSwap(key, gradeProcessDtoList, value));
-            });
+    resultDtoList.addAll(processClassGenderSwap(newGrade, classDivisionProcessDtoList, classGradeExpectedInput));
     return resultDtoList;
   }
 
@@ -78,6 +73,7 @@ public class ClassDivisionGenderSwap extends ClassDivisionProcessor {
 
     sortedClassNameListProcessDtoMap.forEach(
         (key, value) -> {
+            log.info("sortedClassNameListProcessDtoMap before add to genderSwapPool, key:{}, value:{}", key, value.size() );
           List<ClassDivisionProcessDto> malePerClassProcessDtoList =
               value.stream()
                   .filter(e -> StringUtils.equalsIgnoreCase(e.getStudentGender(), "M"))
@@ -121,6 +117,7 @@ public class ClassDivisionGenderSwap extends ClassDivisionProcessor {
             femalePerClassProcessDtoList.remove(currentDto);
             value.remove(currentDto);
           }
+            log.info("sortedClassNameListProcessDtoMap after add to genderSwapPool, key:{}, value:{}", key, value.size() );
         });
     log.info("new grade:{}, start swapping with genderSwapPool:{}",newGrade, genderSwapPool);
     log.info("sortedClassNameListProcessDtoMap: ");
@@ -155,7 +152,7 @@ public class ClassDivisionGenderSwap extends ClassDivisionProcessor {
       int poolSize = maleGenderSwapPool.size();
       sortedClassNameListProcessDtoMap.forEach(
           (key1, value1) -> {
-            if (maleGenderSwapPool.size() > 0) {
+            if (maleGenderSwapPool.size() == 0) {
               return;
             }
             ClassDivisionProcessDto current = maleGenderSwapPool.get(0);

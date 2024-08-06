@@ -2,6 +2,7 @@ package com.example.classAppClassService.services.classClassification.process;
 
 import com.example.classAppClassService.model.ClassDivisionExpectedInput;
 import com.example.classAppClassService.model.ClassDivisionProcessDto;
+import com.example.classAppClassService.model.ClassGradeExpectedInput;
 import com.example.classAppClassService.services.classClassification.ClassDivisionUtil;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -12,37 +13,29 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ClassDivisionSorting extends ClassDivisionProcessor {
-  private ClassDivisionExpectedInput classDivisionExpectedInput;
+  private ClassGradeExpectedInput classGradeExpectedInput;
+  private int newGrade;
 
-  public ClassDivisionSorting(ClassDivisionExpectedInput classDivisionExpectedInput) {
-    this.classDivisionExpectedInput = classDivisionExpectedInput;
+  public ClassDivisionSorting(int newGrade, ClassGradeExpectedInput classGradeExpectedInput) {
+      this.newGrade = newGrade;
+    this.classGradeExpectedInput = classGradeExpectedInput;
   }
 
   @Override
   public void processData(List<ClassDivisionProcessDto> classDivisionProcessDtoList) {
-    if (Objects.isNull(this.classDivisionExpectedInput)
-        || MapUtils.isEmpty(this.classDivisionExpectedInput.getClassGradeExpectedInputMap())) {
+    if (Objects.isNull(this.classGradeExpectedInput)) {
       return;
     }
-    processNext(snakeSortingAllGrade(classDivisionProcessDtoList, this.classDivisionExpectedInput));
+    processNext(snakeSortingAllGrade(classDivisionProcessDtoList, this.classGradeExpectedInput));
   }
 
   protected List<ClassDivisionProcessDto> snakeSortingAllGrade(
       List<ClassDivisionProcessDto> classDivisionProcessDtoList,
-      ClassDivisionExpectedInput classDivisionExpectedInput) {
+      ClassGradeExpectedInput classGradeExpectedInput) {
     List<ClassDivisionProcessDto> resultProcessDtoList = new ArrayList<>();
-    classDivisionExpectedInput
-        .getClassGradeExpectedInputMap()
-        .forEach(
-            (key, value) -> {
-              List<ClassDivisionProcessDto> gradeProcessDtoList =
-                  classDivisionProcessDtoList.stream()
-                      .filter(e -> e.getNewGrade() == key)
-                      .collect(Collectors.toList());
-              snakeSorting(
-                  gradeProcessDtoList, value.getNumberOfClass(), value.getFirstClassName());
-              resultProcessDtoList.addAll(gradeProcessDtoList);
-            });
+      snakeSorting(
+              classDivisionProcessDtoList, classGradeExpectedInput.getNumberOfClass(), classGradeExpectedInput.getFirstClassName());
+      resultProcessDtoList.addAll(classDivisionProcessDtoList);
     return resultProcessDtoList;
   }
 
