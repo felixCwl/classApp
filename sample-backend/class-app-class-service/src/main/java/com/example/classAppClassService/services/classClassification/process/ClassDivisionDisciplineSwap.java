@@ -58,6 +58,7 @@ public class ClassDivisionDisciplineSwap extends ClassDivisionProcessor {
             classDivisionProcessDtoList.size(),
             disciplineDList.size(),
             classGradeExpectedInput.getNumberOfClass()
+
     );
 
     disciplineDList.forEach(

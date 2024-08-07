@@ -11,6 +11,7 @@ import com.example.classAppClassService.services.classClassification.process.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,22 +39,25 @@ public class ClassDivisionServiceImpl implements ClassDivisionService {
     classDivisionProcessDtoList =
         ClassDivisionUtil.convertExcelDtoToProcessDto(classDivisionExcels);
 
+      assignNewGrade(classDivisionProcessDtoList);
+
     Map<Integer, List<ClassDivisionProcessDto>> gradeGroupProcessDtoMap =
         classDivisionProcessDtoList.stream()
-            .collect(Collectors.groupingBy(ClassDivisionProcessDto::getOriginalGrade));
+            .collect(Collectors.groupingBy(ClassDivisionProcessDto::getNewGrade));
 
     List<ClassDivisionProcessDto> resultDtoList = new ArrayList<>();
 
     gradeGroupProcessDtoMap.forEach(
         (grade, dtoList) -> {
-            int newGrade = grade+1;
           ClassDivisionProcessor classDivisionProcessor =
               ClassDivisionProcessor.link(
                   new ClassDivisionPreHandleData(),
-                  new ClassDivisionSorting(newGrade, classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(newGrade)),
-                  new ClassDivisionGenderSwap(newGrade, classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(newGrade)),
-                  new ClassDivisionDisciplineSwap(newGrade, classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(newGrade)),
-                  new ClassDivisionRetainSwap(newGrade,classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(newGrade)));
+                  new ClassDivisionSorting(grade, classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(grade)),
+                  new ClassDivisionGenderSwap(grade, classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(grade))
+                      ,
+                  new ClassDivisionDisciplineSwap(grade, classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(grade)),
+                  new ClassDivisionRetainSwap(grade,classDivisionDto.getClassDivisionExpectedInput().getClassGradeExpectedInputMap().get(grade))
+              );
           classDivisionProcessor.processData(dtoList);
           resultDtoList.addAll(dtoList);
         });
@@ -62,4 +66,18 @@ public class ClassDivisionServiceImpl implements ClassDivisionService {
         ClassDivisionUtil.convertProcessDtoToResultDto(resultDtoList);
     return ClassDivisionUtil.convertObjectListToJsonNode(resultDataList);
   }
+
+    private void assignNewGrade(List<ClassDivisionProcessDto> classDivisionProcessDtoList) {
+        classDivisionProcessDtoList.forEach(
+                classDivisionProcessDto -> {
+                    String studentRemark = StringUtils.lowerCase(classDivisionProcessDto.getRemark());
+                    String promotionPrefix = StringUtils.lowerCase("promoted");
+                    int newGrade =
+                            StringUtils.equals(studentRemark, promotionPrefix)
+                                    ? classDivisionProcessDto.getOriginalGrade() + 1
+                                    : classDivisionProcessDto.getOriginalGrade();
+                    classDivisionProcessDto.setNewGrade(newGrade);
+                });
+    }
+
 }

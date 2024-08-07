@@ -6,6 +6,7 @@ import com.example.classAppClassService.model.ClassGradeExpectedInput;
 import com.example.classAppClassService.services.classClassification.ClassDivisionUtil;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +33,13 @@ public class ClassDivisionSorting extends ClassDivisionProcessor {
   protected List<ClassDivisionProcessDto> snakeSortingAllGrade(
       List<ClassDivisionProcessDto> classDivisionProcessDtoList,
       ClassGradeExpectedInput classGradeExpectedInput) {
-    List<ClassDivisionProcessDto> resultProcessDtoList = new ArrayList<>();
+      List<ClassDivisionProcessDto> retainedList = classDivisionProcessDtoList.stream().filter(e -> !StringUtils.equalsIgnoreCase(e.getRemark(), "promoted")).toList();
+      classDivisionProcessDtoList = classDivisionProcessDtoList.stream().filter(e -> StringUtils.equalsIgnoreCase(e.getRemark(), "promoted")).toList();
+      List<ClassDivisionProcessDto> resultProcessDtoList = new ArrayList<>();
       snakeSorting(
               classDivisionProcessDtoList, classGradeExpectedInput.getNumberOfClass(), classGradeExpectedInput.getFirstClassName());
       resultProcessDtoList.addAll(classDivisionProcessDtoList);
+      resultProcessDtoList.addAll(retainedList);
     return resultProcessDtoList;
   }
 

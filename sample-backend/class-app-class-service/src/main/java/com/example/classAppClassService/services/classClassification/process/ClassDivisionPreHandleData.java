@@ -51,7 +51,7 @@ public class ClassDivisionPreHandleData extends ClassDivisionProcessor {
             classDivisionProcessDtoList),
         Level.DEBUG);
 
-    assignNewGrade(classDivisionProcessDtoList);
+    preHandleRetained(classDivisionProcessDtoList);
     ClassDivisionUtil.sortedByNewGradeAndGradeRank(classDivisionProcessDtoList);
     getLogger(
         "processData",
@@ -107,16 +107,11 @@ public class ClassDivisionPreHandleData extends ClassDivisionProcessor {
         });
   }
 
-  private void assignNewGrade(List<ClassDivisionProcessDto> classDivisionProcessDtoList) {
-    classDivisionProcessDtoList.forEach(
-        classDivisionProcessDto -> {
-          String studentRemark = StringUtils.lowerCase(classDivisionProcessDto.getRemark());
-          String promotionPrefix = StringUtils.lowerCase("promoted");
-          int newGrade =
-              StringUtils.equals(studentRemark, promotionPrefix)
-                  ? classDivisionProcessDto.getOriginalGrade() + 1
-                  : classDivisionProcessDto.getOriginalGrade();
-          classDivisionProcessDto.setNewGrade(newGrade);
-        });
+  private void preHandleRetained(List<ClassDivisionProcessDto> classDivisionProcessDtoList) {
+      classDivisionProcessDtoList.stream().filter(e -> !StringUtils.equalsIgnoreCase(e.getRemark(), "promoted")).forEach(
+              classDivisionProcessDto -> {
+                  classDivisionProcessDto.setNewClassName(classDivisionProcessDto.getOriginalClassName().substring(classDivisionProcessDto.getOriginalClassName().length() - 1));
+              });
   }
+
 }
