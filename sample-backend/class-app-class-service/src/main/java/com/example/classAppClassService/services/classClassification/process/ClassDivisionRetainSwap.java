@@ -79,6 +79,7 @@ public class ClassDivisionRetainSwap extends ClassDivisionProcessor {
             }
 
             if (Objects.nonNull(downDto)
+                && StringUtils.equalsIgnoreCase(dto.getOriginalClassName().substring(dto.getOriginalClassName().length() - 1), dto.getNewClassName().substring(dto.getNewClassName().length() - 1))
                 && !StringUtils.equalsIgnoreCase(downDto.getNewClassName(), dto.getNewClassName())
                 && downDto.getStudentGradeRank()
                     > classGradeExpectedInput.getImmutableGradeRank()) {
@@ -96,7 +97,8 @@ public class ClassDivisionRetainSwap extends ClassDivisionProcessor {
             }
 
             if (Objects.nonNull(upDto)
-                && !StringUtils.equalsIgnoreCase(upDto.getNewClassName(), dto.getNewClassName())
+                    && StringUtils.equalsIgnoreCase(dto.getOriginalClassName().substring(dto.getOriginalClassName().length() - 1), dto.getNewClassName().substring(dto.getNewClassName().length() - 1))
+                    && !StringUtils.equalsIgnoreCase(upDto.getNewClassName(), dto.getNewClassName())
                 && upDto.getStudentGradeRank() > classGradeExpectedInput.getImmutableGradeRank()) {
               log.info("new Grade:{},before retained swap, process dto:{}, checked upDto:{} with counter {}", newGrade, dto, upDto, counter);
               String originalNewRetainClass = dto.getNewClassName();

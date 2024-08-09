@@ -4,6 +4,7 @@ import com.example.classAppClassService.model.ClassDivisionExpectedInput;
 import com.example.classAppClassService.model.ClassDivisionProcessDto;
 import com.example.classAppClassService.model.ClassGradeExpectedInput;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -50,7 +51,10 @@ public class ClassDivisionDisciplineSwap extends ClassDivisionProcessor {
     List<ClassDivisionProcessDto> disciplineDList =
         classDivisionProcessDtoList.stream()
             .filter(e -> StringUtils.equalsIgnoreCase(e.getStudentDisciple(), "D"))
-            .toList();
+            .collect(Collectors.toList());
+    if (CollectionUtils.isEmpty(disciplineDList)) {
+      return classDivisionProcessDtoList;
+    }
     log.info("new Grade:{}, classDivisionProcessDtoList size:{}," +
                     " disciplineDList size:{}," +
                     " expectedNumberOfClass:{}",
@@ -60,7 +64,8 @@ public class ClassDivisionDisciplineSwap extends ClassDivisionProcessor {
             classGradeExpectedInput.getNumberOfClass()
 
     );
-
+    sortedByGradeRank(disciplineDList);
+    List<ClassDivisionProcessDto> unsortedList = new ArrayList<>();
     disciplineDList.forEach(
         dto -> {
           boolean doFlag = true;
@@ -89,7 +94,7 @@ public class ClassDivisionDisciplineSwap extends ClassDivisionProcessor {
 
               if (Objects.nonNull(downDto)
                   && checkIsAssignableClass(
-                      classDivisionProcessDtoList, downDto, classGradeExpectedInput)
+                      classDivisionProcessDtoList, downDto, classGradeExpectedInput, dto)
                   && StringUtils.equalsIgnoreCase(
                       dto.getStudentGender(), downDto.getStudentGender())
                   && !StringUtils.equalsIgnoreCase(dto.getNewClassName(), downDto.getNewClassName())
@@ -124,7 +129,7 @@ public class ClassDivisionDisciplineSwap extends ClassDivisionProcessor {
 
               if (Objects.nonNull(upDto)
                   && checkIsAssignableClass(
-                      classDivisionProcessDtoList, upDto, classGradeExpectedInput)
+                      classDivisionProcessDtoList, upDto, classGradeExpectedInput, dto)
                   && StringUtils.equalsIgnoreCase(dto.getStudentGender(), upDto.getStudentGender())
                   && !StringUtils.equalsIgnoreCase(dto.getNewClassName(), upDto.getNewClassName())
                   && !StringUtils.equalsIgnoreCase(upDto.getStudentDisciple(), "D")
@@ -162,6 +167,34 @@ public class ClassDivisionDisciplineSwap extends ClassDivisionProcessor {
             }
           }
         });
+
+    log.info("discipline list: ");
+    classDivisionProcessDtoList.stream()
+            .collect(Collectors.groupingBy(ClassDivisionProcessDto::getNewClassName)).forEach(
+            (key3, value3) -> {
+              log.info(
+                      "Class:"
+                              + key3
+                              + ", total male"
+                              + value3.stream()
+                              .filter(e -> StringUtils.equalsIgnoreCase(e.getStudentGender(), "M"))
+                              .toList()
+                              .size()
+                              + " total female:"
+                              + value3.stream()
+                              .filter(e -> StringUtils.equalsIgnoreCase(e.getStudentGender(), "F"))
+                              .toList()
+                              .size());
+              log.info(
+                      "Class:"
+                              + key3
+                              + ", total Discipline D: "
+                              + value3.stream()
+                              .filter(e -> StringUtils.equalsIgnoreCase(e.getStudentDisciple(), "D"))
+                              .toList()
+                              .size());
+            }
+            );
     return classDivisionProcessDtoList;
   }
 
@@ -202,9 +235,13 @@ public class ClassDivisionDisciplineSwap extends ClassDivisionProcessor {
   private boolean checkIsAssignableClass(
       List<ClassDivisionProcessDto> classDivisionProcessDtoList,
       ClassDivisionProcessDto checkDto,
-      ClassGradeExpectedInput classGradeExpectedInput) {
+      ClassGradeExpectedInput classGradeExpectedInput,
+  ClassDivisionProcessDto currentDto) {
 
-    AtomicBoolean result = new AtomicBoolean(false);
+    //AtomicBoolean result = new AtomicBoolean(false);
+    AtomicBoolean processCheckDto = new AtomicBoolean(false);
+    AtomicBoolean processCurrentDto = new AtomicBoolean(false);
+
     List<ClassDivisionProcessDto> disciplineDList =
         classDivisionProcessDtoList.stream()
             .filter(e -> StringUtils.equalsIgnoreCase(e.getStudentDisciple(), "D"))
@@ -222,10 +259,23 @@ public class ClassDivisionDisciplineSwap extends ClassDivisionProcessor {
                       .filter(e -> StringUtils.equalsIgnoreCase(e.getStudentDisciple(), "D"))
                       .toList()
                       .size()
-                  < expectedPerClass) {
-            result.set(true);
+                  <= expectedPerClass) {
+            processCheckDto.set(true);
           }
         });
-    return result.get();
+
+    sortedClassNameListProcessDtoMap.forEach(
+            (key, value) -> {
+              if (StringUtils.equalsIgnoreCase(currentDto.getNewClassName(), key)
+                      && value.stream()
+                      .filter(e -> StringUtils.equalsIgnoreCase(e.getStudentDisciple(), "D"))
+                      .toList()
+                      .size()
+                      >= expectedPerClass) {
+                processCurrentDto.set(true);
+              }
+            });
+
+    return processCurrentDto.get() && processCheckDto.get();
   }
 }
