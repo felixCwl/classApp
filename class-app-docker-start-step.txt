@@ -1,3 +1,6 @@
+docker network rm my-class-service
+docker prune
+
 #create network my-class-service, use --driver nat if failed to create
 docker network create --driver nat my-class-service
 #docker network create my-class-service
@@ -12,4 +15,4 @@ docker run --name=file-service --hostname=4fcb1b6f54a9 --env=DISCOVERY_SERVICE_P
 docker run --name=class-service --hostname=77383f4958d5 --env=DISCOVERY_SERVICE_PORT=8123 --env=FILE_SERVICE_PORT=8081 --env=CLASS_SERVICE_PORT=8086 --env=DISCOVERY_SERVICE_NAME=discovery-service --env=FILE_SERVICE_NAME=file-service --env=CLASS_SERVICE_NAME=class-service --env=COMPLUS_NGenProtectedProcess_FeatureEnabled=0 --env=chocolateyVersion=1.4.0 -p 8086:8086 --network=my-class-service --restart=no -d classappservice/class-app-class-service:master
 
 #then start frontend
-docker run --name=class-app --user=ContainerAdministrator --workdir=C:\app --network=my-class-service -p 3000 --restart=no -d classappservice/class-app-web:latest
+docker run --name=class-app --user=ContainerAdministrator --workdir=C:\app --network=my-class-service -p 3000:3000 --restart=no -d classappservice/class-app-web:latest
